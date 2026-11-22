@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>薔薇日記 · Rose Diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito+Sans:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blush:#fde2e4;
+  --rose:#e56b6f;
+  --rose-deep:#c9505a;
+  --plum:#4a2545;
+  --gold:#d4a373;
+  --serif:'Cormorant Garamond','Noto Serif SC',Georgia,serif;
+  --sans:'Nunito Sans','Noto Sans SC','Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--blush);
+  color:var(--plum);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.7;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+/* 全局极淡圆点纹理 */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:radial-gradient(rgba(229,107,111,.14) 1px,transparent 1px);
+  background-size:22px 22px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ============ 角落装饰：10% 透明度 ============ */
+.corner{
+  position:absolute;
+  width:150px;
+  height:150px;
+  opacity:.10;
+  z-index:1;
+  pointer-events:none;
+}
+.corner svg{width:100%;height:100%;}
+.c-tl{top:18px;left:18px;transform:rotate(-8deg);}
+.c-tr{top:18px;right:18px;transform:scaleX(-1) rotate(-8deg);}
+.c-bl{bottom:18px;left:18px;transform:scaleY(-1) rotate(-8deg);}
+.c-br{bottom:18px;right:18px;transform:scale(-1) rotate(-8deg);}
+.c-mid{width:110px;height:110px;opacity:.10;}
+
+.wrap{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:64px 28px 90px;}
+
+/* ============ 页头 ============ */
+.site-header{text-align:center;margin-bottom:58px;position:relative;}
+.site-header .kicker{
+  font:600 13px/1 var(--sans);
+  letter-spacing:.42em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:14px;
+}
+.site-header h1{
+  font:700 64px/1.05 var(--serif);
+  letter-spacing:.01em;
+  color:var(--plum);
+}
+.site-header h1 em{font-style:italic;color:var(--rose);font-weight:500;}
+.site-header .sub{
+  margin-top:12px;
+  font:italic 400 20px/1.5 var(--serif);
+  color:rgba(74,37,69,.72);
+}
+.flourish{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin:20px auto 0;max-width:340px;
+}
+.flourish::before,.flourish::after{
+  content:'';height:1px;flex:1;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.flourish svg{width:20px;height:20px;fill:var(--gold);}
+
+/* ============ 分类筛选 ============ */
+.filters{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:0 0 40px;}
+.chip{
+  border:1.5px solid var(--rose);
+  background:rgba(255,255,255,.55);
+  color:var(--plum);
+  font:600 13px/1 var(--sans);
+  letter-spacing:.06em;
+  padding:9px 18px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:background .2s ease-out,transform .2s ease-out,color .2s ease-out;
+}
+.chip:hover{transform:translateY(-2px);background:#fff;}
+.chip.active{background:var(--rose);color:#fff;}
+
+/* ============  featured hero ============ */
+.hero{
+  position:relative;
+  background:#fff;
+  border:2px solid var(--rose);
+  border-radius:22px;
+  padding:46px 48px;
+  margin-bottom:56px;
+  overflow:hidden;
+  transition:transform .2s ease-out,box-shadow .2s ease-out;
+}
+.hero:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(74,37,69,.14);}
+.hero::before{
+  content:'';
+  position:absolute;
+  width:520px;height:520px;
+  right:-140px;top:-200px;
+  background:radial-gradient(circle,rgba(229,107,111,.28) 0%,rgba(212,163,115,.12) 42%,rgba(253,226,228,0) 72%);
+  pointer-events:none;
+  z-index:0;
+}
+.hero::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:radial-gradient(rgba(229,107,111,.30) 1px,transparent 1.4px);
+  background-size:7px 7px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 55%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 55%,#000 100%);
+  opacity:.55;
+  pointer-events:none;
+  z-index:0;
+}
+.hero-inner{position:relative;z-index:1;max-width:560px;}
+.hero-badge{
+  display:inline-block;
+  font:600 12px/1 var(--sans);
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:16px;
+}
+.hero h2{
+  font:600 44px/1.1 var(--serif);
+  color:var(--plum);
+  margin-bottom:8px;
+}
+.hero h2 em{font-style:italic;color:var(--rose);font-weight:500;}
+.hero .zh{font:500 18px/1.5 var(--serif);color:rgba(74,37,69,.7);margin-bottom:16px;}
+.hero p{
+  font-size:16px;line-height:1.7;color:var(--plum);
+  margin-bottom:24px;max-width:500px;
+}
+.read-more{
+  display:inline-flex;align-items:center;gap:10px;
+  border:none;cursor:pointer;
+  background:var(--rose);
+  color:#fff;
+  font:600 14px/1 var(--sans);
+  letter-spacing:.05em;
+  padding:13px 24px;
+  border-radius:999px;
+  transition:transform .2s ease-out,background .2s ease-out;
+}
+.read-more:hover{background:var(--rose-deep);transform:translateY(-2px);}
+.read-more svg{width:16px;height:16px;fill:#fff;}
+.hero-corner{position:absolute;width:130px;height:130px;opacity:.10;right:26px;bottom:16px;z-index:1;pointer-events:none;}
+
+/* ============ 区块标题 ============ */
+.section-title{
+  display:flex;align-items:center;gap:18px;
+  margin:0 0 30px;
+}
+.section-title h3{font:600 32px/1.1 var(--serif);color:var(--plum);white-space:nowrap;}
+.section-title .line{height:1px;flex:1;background:linear-gradient(90deg,var(--gold),transparent);}
+.section-title svg{width:26px;height:26px;fill:var(--rose);flex:none;}
+
+/* ============ 文章卡片网格 ============ */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:30px;
+}
+.card{
+  position:relative;
+  background:#fff;
+  border:2px solid var(--rose);
+  border-radius:18px;
+  overflow:hidden;
+  transition:transform .2s ease-out,box-shadow .2s ease-out;
+  cursor:pointer;
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(74,37,69,.13);}
+.card-header{
+  position:relative;
+  height:150px;
+  background-color:#fff;
+  background-image:radial-gradient(rgba(229,107,111,.42) 1px,transparent 1.6px);
+  background-size:6px 6px;
+  display:flex;align-items:center;justify-content:center;
+  border-bottom:1.5px solid rgba(229,107,111,.35);
+  overflow:hidden;
+}
+/* 头部中心柔光，让网点和图案更有层次 */
+.card-header::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%,rgba(253,226,228,.85),rgba(255,255,255,0) 68%);
+}
+.card-header .glyph{position:relative;width:74px;height:74px;opacity:.85;}
+.card-header .glyph svg{width:100%;height:100%;fill:var(--rose);}
+
+/* 丝带分类标签 */
+.ribbon{
+  position:absolute;
+  top:16px;left:-9px;
+  z-index:2;
+  background:var(--rose);
+  color:#fff;
+  font:600 11px/1 var(--sans);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:7px 16px 7px 14px;
+  box-shadow:2px 2px 0 rgba(201,80,90,.25);
+}
+.ribbon::before{
+  content:'';
+  position:absolute;
+  left:0;bottom:-7px;
+  border-style:solid;
+  border-width:7px 9px 0 0;
+  border-color:var(--rose-deep) transparent transparent transparent;
+}
+.ribbon::after{
+  content:'';
+  position:absolute;right:-8px;top:0;
+  border-style:solid;
+  border-width:15px 0 15px 8px;
+  border-color:transparent transparent transparent var(--rose-deep);
+}
+
+.card-body{padding:24px 26px 28px;}
+.card-body h4{
+  font:600 27px/1.18 var(--serif);
+  color:var(--plum);
+  margin-bottom:10px;
+}
+.card-body .excerpt{
+  font-size:15px;line-height:1.7;color:rgba(74,37,69,.82);
+  margin-bottom:20px;
+}
+.card-meta{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:16px;
+  border-top:1px dashed rgba(212,163,115,.6);
+  font:600 12px/1 var(--sans);
+  letter-spacing:.04em;
+  color:var(--gold);
+}
+.heart{
+  border:none;background:none;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+  font:600 12px/1 var(--sans);color:var(--gold);
+  transition:transform .2s ease-out,color .2s ease-out;
+}
+.heart svg{width:17px;height:17px;fill:none;stroke:var(--gold);stroke-width:2;transition:fill .2s ease-out,stroke .2s ease-out;}
+.heart.liked{color:var(--rose);}
+.heart.liked svg{fill:var(--rose);stroke:var(--rose);}
+.heart:hover{transform:scale(1.12);}
+
+/* 隐藏被筛选掉的卡片 */
+.card.hidden{display:none;}
+
+/* ============ 页脚 ============ */
+.site-footer{
+  text-align:center;
+  margin-top:70px;
+  font:italic 400 18px/1.6 var(--serif);
+  color:rgba(74,37,69,.65);
+}
+.site-footer .heart-glyph{color:var(--rose);font-style:normal;}
+
+/* ============ 响应式 ============ */
+@media(max-width:640px){
+  .site-header h1{font-size:46px;}
+  .hero{padding:32px 26px;}
+  .hero h2{font-size:34px;}
+  .section-title h3{font-size:27px;}
+  .wrap{padding:44px 20px 70px;}
+}
+</style>
+</head>
+<body>
+
+<!-- 可复用的 SVG 图形定义 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sparkle" viewBox="0 0 100 100">
+      <path d="M50 2 C52 34 66 48 98 50 C66 52 52 66 50 98 C48 66 34 52 2 50 C34 48 48 34 50 2 Z" fill="#e56b6f"/>
+      <circle cx="84" cy="16" r="4" fill="#d4a373"/>
+      <circle cx="14" cy="84" r="3" fill="#d4a373"/>
+    </symbol>
+    <symbol id="rose" viewBox="0 0 100 100">
+      <path d="M50 14 C72 14 88 30 88 52 C88 74 71 90 50 90 C29 90 12 74 12 52 C12 30 28 14 50 14 Z" fill="none" stroke="#e56b6f" stroke-width="3"/>
+      <path d="M50 28 C64 28 74 38 74 52 C74 66 64 76 50 76 C36 76 26 66 26 52 C26 38 36 28 50 28 Z" fill="none" stroke="#e56b6f" stroke-width="2.5"/>
+      <path d="M50 40 C58 40 64 46 64 54 C64 62 58 68 50 68 C42 68 36 62 36 54 C36 46 42 40 50 40 Z" fill="#e56b6f"/>
+      <path d="M50 68 L50 94 M50 80 C40 74 31 76 27 86 C36 88 44 86 50 80 M50 80 C60 74 69 76 73 86 C64 88 56 86 50 80" fill="none" stroke="#e56b6f" stroke-width="2.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="heart" viewBox="0 0 24 24">
+      <path d="M12 21 C12 21 3 14.5 3 8.5 C3 5.5 5.2 3.5 8 3.5 C9.8 3.5 11.2 4.4 12 5.7 C12.8 4.4 14.2 3.5 16 3.5 C18.8 3.5 21 5.5 21 8.5 C21 14.5 12 21 12 21 Z"/>
+    </symbol>
+    <symbol id="arrow" viewBox="0 0 24 24">
+      <path d="M13 4 L11 4 L11 15 L6 15 L12 21 L18 15 L13 15 Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- 四角装饰（10% 透明度，不遮挡文字） -->
+<svg class="corner c-tl" viewBox="0 0 160 160"><use href="#rose"/></svg>
+<svg class="corner c-tr" viewBox="0 0 160 160"><use href="#sparkle"/></svg>
+<svg class="corner c-bl" viewBox="0 0 160 160"><use href="#sparkle"/></svg>
+<svg class="corner c-br" viewBox="0 0 160 160"><use href="#rose"/></svg>
+
+<div class="wrap">
+
+  <header class="site-header">
+    <div class="kicker">a little book of feelings</div>
+    <h1>薔薇<em>日記</em></h1>
+    <div class="sub">— 少女漫画风格的碎碎念与手账 —</div>
+    <div class="flourish">
+      <svg viewBox="0 0 24 24"><use href="#sparkle"/></svg>
+    </div>
+  </header>
+
+  <nav class="filters" aria-label="文章分类">
+    <button class="chip active" data-filter="all">全部 · All</button>
+    <button class="chip" data-filter="diary">日常 · Diary</button>
+    <button class="chip" data-filter="love">心动 · Heart</button>
+    <button class="chip" data-filter="craft">手作 · Craft</button>
+    <button class="chip" data-filter="travel">旅行 · Travel</button>
+  </nav>
+
+  <!-- featured hero -->
+  <article class="hero">
+    <div class="hero-inner">
+      <span class="hero-badge">✦ Featured Story</span>
+      <h2>When the <em>Sakura</em> Fell</h2>
+      <div class="zh">樱花落下的那个下午</div>
+      <p>风把花瓣吹进教室的窗台，你转过头对我笑了一下。那一瞬间，连课本上的字都变成了粉色。关于春天、关于悸动，还有那些没说出口的话——都藏在这一篇里。</p>
+      <button class="read-more">阅读全文 <svg viewBox="0 0 24 24"><use href="#arrow"/></svg></button>
+    </div>
+    <svg class="hero-corner" viewBox="0 0 120 120"><use href="#rose"/></svg>
+  </article>
+
+  <div class="section-title">
+    <svg viewBox="0 0 24 24"><use href="#sparkle"/></svg>
+    <h3>最近的故事</h3>
+    <span class="line"></span>
+  </div>
+
+  <main class="grid" id="grid">
+
+    <article class="card" data-cat="love">
+      <div class="card-header">
+        <span class="ribbon">心动 Heart</span>
+        <div class="glyph"><svg viewBox="0 0 100 100"><use href="#heart" x="26" y="26" width="48" height="48"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h4>A Letter Never Sent</h4>
+        <p class="excerpt">写满一整页又撕掉的信纸，最后只留下淡淡的墨香。有些心意，适合永远停留在春天。</p>
+        <div class="card-meta">
+          <span>2026.11.18 · 4 min</span>
+          <button class="heart" aria-label="喜欢"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span>128</span></button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="diary">
+      <div class="card-header">
+        <span class="ribbon">日常 Diary</span>
+        <div class="glyph"><svg viewBox="0 0 100 100"><use href="#sparkle"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h4>Tea &amp; Tiny Joys</h4>
+        <p class="excerpt">下午三点的红茶和刚烤好的司康，窗外是慢慢变橙的天空。平凡的日子也要认真闪光呀。</p>
+        <div class="card-meta">
+          <span>2026.11.15 · 3 min</span>
+          <button class="heart" aria-label="喜欢"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span>96</span></button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="craft">
+      <div class="card-header">
+        <span class="ribbon">手作 Craft</span>
+        <div class="glyph"><svg viewBox="0 0 100 100"><use href="#rose"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h4>Pressed Flower Bookmark</h4>
+        <p class="excerpt">把散步时捡到的花瓣压进书页，做成独一无二的书签。附上超详细的压花小教程 🌸</p>
+        <div class="card-meta">
+          <span>2026.11.12 · 6 min</span>
+          <button class="heart" aria-label="喜欢"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span>210</span></button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="travel">
+      <div class="card-header">
+        <span class="ribbon">旅行 Travel</span>
+        <div class="glyph"><svg viewBox="0 0 100 100"><use href="#sparkle"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h4>A Train to Nowhere</h4>
+        <p class="excerpt">坐上不知开往哪里的列车，把耳机分你一半。沿途的风景，都变成了我们之间的秘密。</p>
+        <div class="card-meta">
+          <span>2026.11.09 · 8 min</span>
+          <button class="heart" aria-label="喜欢"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span>175</span></button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="love">
+      <div class="card-header">
+        <span class="ribbon">心动 Heart</span>
+        <div class="glyph"><svg viewBox="0 0 100 100"><use href="#heart" x="26" y="26" width="48" height="48"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h4>Umbrella for Two</h4>
+        <p class="excerpt">突如其来的阵雨，和一把小小的伞。肩膀悄悄靠近的那三厘米，是整个雨季最温柔的记忆。</p>
+        <div class="card-meta">
+          <span>2026.11.06 · 5 min</span>
+          <button class="heart" aria-label="喜欢"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span>302</span></button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="diary">
+      <div class="card-header">
+        <span class="ribbon">日常 Diary</span>
+        <div class="glyph"><svg viewBox="0 0 100 100"><use href="#rose"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h4>Midnight Sketchbook</h4>
+        <p class="excerpt">深夜的台灯下，随笔涂鸦的速写本。画着画着就睡着了，第二天发现纸上全是你的侧脸。</p>
+        <div class="card-meta">
+          <span>2026.11.02 · 4 min</span>
+          <button class="heart" aria-label="喜欢"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span>143</span></button>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer class="site-footer">
+    made with <span class="heart-glyph">♥</span> and a little bit of magic · 薔薇日記
+  </footer>
+
+</div>
+
+<script>
+  // 分类筛选
+  const chips = document.querySelectorAll('.chip');
+  const cards = document.querySelectorAll('.card');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const filter = chip.dataset.filter;
+      cards.forEach(card => {
+        card.classList.toggle('hidden', filter !== 'all' && card.dataset.cat !== filter);
+      });
+    });
+  });
+
+  // 喜欢按钮：切换状态并更新计数
+  document.querySelectorAll('.heart').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const liked = btn.classList.toggle('liked');
+      const countSpan = btn.querySelector('span');
+      let n = parseInt(countSpan.textContent, 10);
+      countSpan.textContent = liked ? n + 1 : n - 1;
+    });
+  });
+
+  // 卡片 / Hero 点击提示（纯前端交互示例）
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      const title = card.querySelector('h4').textContent;
+      console.log('打开文章：' + title);
+    });
+  });
+</script>
+</body>
+</html>
